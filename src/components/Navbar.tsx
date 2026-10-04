@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200/90 shadow-xs transition-colors w-full">
-      <div className="w-full max-w-[1720px] mx-auto px-3 sm:px-4 lg:px-4 xl:px-6 h-20 sm:h-22 lg:h-24 flex items-center justify-between gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4">
+      <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 xl:px-10 h-20 sm:h-22 lg:h-24 flex items-center justify-between gap-2 sm:gap-3 lg:gap-4">
         {/* ========================================================= */}
         {/* AREA 1: LOGÓTIPO À ESQUERDA */}
         {/* ========================================================= */}
@@ -163,143 +163,168 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="sm:hidden">Agendar</span>
           </button>
 
-          {/* Botão de Menu Hambúrguer (Mobile & Tablet < 1024px) */}
+          {/* Botão de Menu (Acessível em mobile, tablet e desktop) */}
           <button
             ref={toggleButtonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden min-w-[38px] min-h-[38px] w-9.5 h-9.5 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer shadow-2xs border border-slate-200/90"
+            className="min-w-[40px] min-h-[40px] h-10 px-2.5 sm:px-3 flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer shadow-2xs border border-slate-200/90"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-menu"
             aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
           >
             {mobileMenuOpen ? <X className="w-5 h-5 text-slate-900" /> : <Menu className="w-5 h-5 text-slate-900" />}
+            <span className="hidden md:inline text-xs font-semibold text-slate-700">Menu</span>
           </button>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* MOBILE MENU DRAWER / COMPACT SHEET */}
+      {/* 100% FULL-SCREEN ADJUSTED & RESPONSIVE MENU MODAL */}
       {/* ========================================================= */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 overflow-hidden">
-          {/* Backdrop with blur */}
-          <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
+        <div
+          id="mobile-navigation-menu"
+          ref={mobileMenuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu Principal de Navegação"
+          className="fixed inset-0 w-full h-full bg-white z-[60] flex flex-col overflow-hidden animate-in fade-in duration-200"
+        >
+          {/* Top Bar: 100% width with Logo and Close */}
+          <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12 py-3.5 sm:py-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <OralProLogo size="header" />
+            </div>
 
-          {/* Slide-over Drawer / Panel */}
-          <div
-            id="mobile-navigation-menu"
-            ref={mobileMenuRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu Principal"
-            className="fixed top-0 right-0 bottom-0 w-full max-w-[340px] sm:max-w-[380px] bg-white shadow-2xl flex flex-col z-50 border-l border-slate-200 overflow-hidden animate-in slide-in-from-right duration-250"
-          >
-            {/* Drawer Top Bar */}
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
-              <div className="flex items-center gap-2">
-                <OralProLogo size="xs" />
-              </div>
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200/80 active:bg-slate-200 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                className="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 transition-colors cursor-pointer border border-slate-200 text-xs sm:text-sm font-bold shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 aria-label="Fechar menu de navegação"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 text-slate-900" />
+                <span className="hidden sm:inline">Fechar Menu</span>
               </button>
             </div>
+          </div>
 
-            {/* Scrollable Content Container */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 overscroll-contain">
-              {/* Botão Admin Provisório - 100% completo, sem cortes, com ícone, título, rótulo e animação */}
-              <button
-                type="button"
-                onClick={() => handleNavClick('admin')}
-                className={`animate-orange-pulse w-full p-3 rounded-2xl transition-all cursor-pointer flex items-center justify-between text-left border shadow-xs ${
-                  currentPage === 'admin'
-                    ? 'bg-orange-600 text-white border-orange-700 ring-2 ring-orange-300'
-                    : 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white border-orange-600'
-                }`}
-                title="Botão Admin provisório"
-                aria-label="Botão Admin provisório"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-white shrink-0" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-white tracking-tight leading-tight">
-                      Botão Admin
+          {/* Scrollable Content Container - 100% Screen Responsive Layout */}
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-6 sm:py-8 lg:py-10 overscroll-contain bg-slate-50/50">
+            <div className="w-full max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+                {/* Left Column (Desktop: 4 cols) - Priority Action Cards */}
+                <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+                  {/* Botão Admin Provisório */}
+                  <button
+                    type="button"
+                    onClick={() => handleNavClick('admin')}
+                    className={`animate-orange-pulse w-full p-4 rounded-2xl transition-all cursor-pointer flex items-center justify-between text-left border shadow-xs ${
+                      currentPage === 'admin'
+                        ? 'bg-orange-600 text-white border-orange-700 ring-2 ring-orange-300'
+                        : 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white border-orange-600'
+                    }`}
+                    title="Botão Admin provisório"
+                    aria-label="Botão Admin provisório"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                        <ShieldCheck className="w-6 h-6 text-white shrink-0" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-base font-bold text-white tracking-tight leading-tight">
+                          Botão Admin
+                        </span>
+                        <span className="text-xs font-medium text-orange-100 tracking-wider lowercase leading-tight">
+                          provisório
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white/20 text-white border border-white/30 whitespace-nowrap">
+                      Acesso Restrito
                     </span>
-                    <span className="text-[10px] font-medium text-orange-100 tracking-wider lowercase leading-tight">
-                      provisório
-                    </span>
+                  </button>
+
+                  {/* Botão de Agendamento Completo */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenBooking();
+                    }}
+                    className="w-full py-4 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                  >
+                    <Calendar className="w-5 h-5 shrink-0" />
+                    <span>{t.common.scheduleMeeting}</span>
+                  </button>
+
+                  {/* Seletor de Idioma Completo no Menu */}
+                  <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs">
+                    <LanguageSelector variant="mobile" />
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-white/20 text-white border border-white/30 whitespace-nowrap">
-                  Acesso Restrito
-                </span>
-              </button>
 
-              {/* Botão de Agendamento Completo */}
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenBooking();
-                }}
-                className="w-full py-3.5 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-              >
-                <Calendar className="w-4 h-4 shrink-0" />
-                <span>{t.common.scheduleMeeting}</span>
-              </button>
+                {/* Right Column (Desktop: 7-8 cols) - Navigation Cards */}
+                <div className="lg:col-span-7 xl:col-span-8 space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+                      Navegação
+                    </span>
+                    <span className="text-xs text-slate-400 hidden sm:inline">
+                      Selecione uma área para navegar
+                    </span>
+                  </div>
 
-              {/* Seção de Páginas */}
-              <div className="space-y-1 pt-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-1 mb-1">
-                  Navegação
-                </span>
-                <nav className="flex flex-col space-y-0.5" aria-label="Links Móveis">
-                  {navItems.map((item) => {
-                    const isActive = currentPage === item.page;
-                    return (
-                      <button
-                        key={item.page}
-                        type="button"
-                        onClick={() => handleNavClick(item.page)}
-                        className={`w-full py-3 px-3.5 rounded-xl transition-all cursor-pointer flex items-center justify-between text-left text-sm font-semibold ${
-                          isActive
-                            ? 'text-blue-600 bg-blue-50/80 font-bold border border-blue-100'
-                            : 'text-slate-800 hover:text-blue-600 hover:bg-slate-50'
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                        <ChevronRight
-                          className={`w-4 h-4 transition-transform ${
-                            isActive ? 'text-blue-600 translate-x-1' : 'text-slate-400'
+                  <nav
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3"
+                    aria-label="Links do Menu"
+                  >
+                    {navItems.map((item) => {
+                      const isActive = currentPage === item.page;
+                      return (
+                        <button
+                          key={item.page}
+                          type="button"
+                          onClick={() => handleNavClick(item.page)}
+                          className={`w-full p-4 rounded-2xl transition-all cursor-pointer flex items-center justify-between text-left border ${
+                            isActive
+                              ? 'text-blue-600 bg-blue-50/90 font-bold border-blue-200 shadow-xs'
+                              : 'text-slate-800 bg-white hover:text-blue-600 hover:bg-blue-50/40 hover:border-blue-200 border-slate-200 shadow-2xs'
                           }`}
-                        />
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-
-              {/* Seletor de Idioma Completo no Menu Mobile */}
-              <div className="pt-2 border-t border-slate-100">
-                <LanguageSelector variant="mobile" />
+                        >
+                          <div className="flex flex-col pr-2">
+                            <span className="text-base font-bold">{item.label}</span>
+                            <span className="text-xs text-slate-500 font-normal mt-0.5">
+                              {item.page === 'home' && 'Página inicial da OralPro'}
+                              {item.page === 'servicos' && 'Marketing e captação de pacientes'}
+                              {item.page === 'metodo' && 'Metodologia comercial em 4 etapas'}
+                              {item.page === 'areas' && 'Implantes, ortodontia e estética'}
+                              {item.page === 'sobre' && 'Nossa história e liderança'}
+                              {item.page === 'duvidas' && 'Perguntas frequentes e suporte'}
+                              {item.page === 'contactos' && 'Localização e canais de contacto'}
+                            </span>
+                          </div>
+                          <div
+                            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                              isActive ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600'
+                            }`}
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Footer do Menu */}
-            <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 text-center text-[11px] text-slate-400 shrink-0">
-              OralPro · Marketing & Estratégia Odontológica
-            </div>
+          {/* Footer do Menu 100% Largura */}
+          <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12 py-3 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 shrink-0 gap-2">
+            <span className="font-medium">OralPro · Marketing & Estratégia Odontológica</span>
+            <span className="text-slate-400 text-[11px]">Especialistas em captação de pacientes de alto valor</span>
           </div>
         </div>
       )}

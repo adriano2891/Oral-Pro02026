@@ -4,6 +4,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { Language } from '../types';
 import { OralProEmblem } from './OralProLogo';
 import { ToothCardAvatar, AGENT_AVATAR_SRC, AGENT_AVATAR_FALLBACK } from './ToothCardAvatar';
+import { getOralProAssistantReply } from '../utils/oralProKnowledgeEngine';
 
 export { AGENT_AVATAR_SRC, AGENT_AVATAR_FALLBACK };
 
@@ -148,6 +149,9 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({ isOpen, onToggle, onOpenBo
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
+    let replyText = '';
+    let targetLang: Language | undefined = undefined;
+
     try {
       const historyPayload = messages.slice(-5).map((m) => ({
         sender: m.sender,
@@ -165,36 +169,52 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({ isOpen, onToggle, onOpenBo
         }),
       });
 
-      const data = await res.json();
-      const replyText = data.reply || t.common.error;
-
-      // If backend detected user wanting to switch language, update app language!
-      if (data.language && data.language !== language && (data.language === 'pt' || data.language === 'en' || data.language === 'it')) {
-        setLanguage(data.language as Language);
+      if (res.ok) {
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          if (data && typeof data.reply === 'string' && data.reply.trim().length > 0) {
+            replyText = data.reply;
+            if (data.language && (data.language === 'pt' || data.language === 'en' || data.language === 'it')) {
+              targetLang = data.language as Language;
+            }
+          }
+        }
       }
+    } catch {
+      // Backend request could not complete (e.g. static hosting on Netlify, connection latency, etc.)
+    }
 
-      const botMsg: ChatMessage = {
-        id: `bot-${Date.now()}`,
-        sender: 'bot',
-        text: replyText,
-        timestamp: new Date().toLocaleTimeString(language === 'pt' ? 'pt-PT' : language === 'it' ? 'it-IT' : 'en-GB', {
+    // High-resilience fallback: if backend did not return a valid answer, generate with local clinical knowledge
+    if (!replyText) {
+      const localResult = getOralProAssistantReply(text, userName, language);
+      replyText = localResult.reply;
+      if (localResult.detectedLanguage) {
+        targetLang = localResult.detectedLanguage;
+      }
+    }
+
+    // Auto-switch UI language if requested
+    if (targetLang && targetLang !== language) {
+      setLanguage(targetLang);
+    }
+
+    const currentLang = targetLang || language;
+    const botMsg: ChatMessage = {
+      id: `bot-${Date.now()}`,
+      sender: 'bot',
+      text: replyText,
+      timestamp: new Date().toLocaleTimeString(
+        currentLang === 'pt' ? 'pt-PT' : currentLang === 'it' ? 'it-IT' : 'en-GB',
+        {
           hour: '2-digit',
           minute: '2-digit',
-        }),
-      };
+        }
+      ),
+    };
 
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (err) {
-      const errorMsg: ChatMessage = {
-        id: `err-${Date.now()}`,
-        sender: 'bot',
-        text: t.common.timezoneNotice,
-        timestamp: timeFormatted,
-      };
-      setMessages((prev) => [...prev, errorMsg]);
-    } finally {
-      setLoading(false);
-    }
+    setMessages((prev) => [...prev, botMsg]);
+    setLoading(false);
   };
 
   const handleFeedback = async (msgId: string, rating: 'bom' | 'ruim') => {

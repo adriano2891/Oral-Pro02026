@@ -881,7 +881,7 @@ ${kbContext}
       });
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini API timeout')), 4000)
+        setTimeout(() => reject(new Error('Gemini API timeout')), 12000)
       );
 
       const response: any = await Promise.race([geminiPromise, timeoutPromise]);

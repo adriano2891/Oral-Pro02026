@@ -2,7 +2,7 @@ import React, { useState, useEffect, useId } from 'react';
 import { useSiteContent } from '../context/SiteContentContext';
 
 export const TOOTH_PATH =
-  'M 50 14 C 42 7 34 5 26 5 C 13 5 4 16 4 32 C 4 48 10 62 15 74 C 18 82 20 94 24 102 C 26 106 31 106 34 101 C 39 93 44 82 50 74 C 56 82 61 93 66 101 C 69 106 74 106 76 102 C 80 94 82 82 85 74 C 90 62 96 48 96 32 C 96 16 87 5 74 5 C 66 5 58 7 50 14 Z';
+  'M 50 14 C 42 7 34 5 26 5 C 13 5 4 16 4 32 C 4 48 10 62 15 74 C 18 82 20 94 24 102 C 26 106 31 106 34 101 C 40 94 44 85 50 81 C 56 85 60 94 66 101 C 69 106 74 106 76 102 C 80 94 82 82 85 74 C 90 62 96 48 96 32 C 96 16 87 5 74 5 C 66 5 58 7 50 14 Z';
 
 export const AGENT_AVATAR_SRC = 'https://i.ibb.co/vx8MfgHj/Design-sem-nome-1-1.png';
 export const AGENT_AVATAR_FALLBACK = '/images/agent-avatar.png';
@@ -50,13 +50,13 @@ export const ToothCardAvatar: React.FC<ToothCardAvatarProps> = ({
     }
   };
 
-  // Dimensions for different sizes (compact, refined, and responsive)
+  // Dimensions for different sizes (optimized to fill card and show title and logo completely)
   const sizeClasses = {
     xs: 'w-6 h-[27px]',
-    sm: 'w-8 h-[36px] sm:w-8.5 sm:h-[38px]',
-    md: 'w-10 h-[45px] sm:w-11 sm:h-[49px]',
-    lg: 'w-13 h-[58px] sm:w-14 sm:h-[63px]',
-    responsive: 'w-11 h-[49px] sm:w-12 sm:h-[53px] md:w-[52px] md:h-[58px]',
+    sm: 'w-8.5 h-[38px] sm:w-9 sm:h-[40px]',
+    md: 'w-11 h-[49px] sm:w-12 sm:h-[54px]',
+    lg: 'w-14 h-[62px] sm:w-15 sm:h-[66px]',
+    responsive: 'w-12 h-[53px] sm:w-[52px] sm:h-[57px] md:w-[56px] md:h-[62px]',
   }[size];
 
   return (
@@ -111,8 +111,8 @@ export const ToothCardAvatar: React.FC<ToothCardAvatarProps> = ({
         />
       </svg>
 
-      {/* Fitted & Responsive Image Centered Inside the Tooth Card */}
-      <div className="relative z-10 w-[84%] h-[78%] -mt-0.5 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+      {/* Fitted & Responsive Image Centered Inside the Tooth Card - Completely Showing Title and Logo Without Cutoffs */}
+      <div className="relative z-10 w-[90%] h-[84%] -mt-1 flex items-center justify-center pointer-events-none select-none">
         <img
           src={currentSrc}
           onError={handleError}

@@ -142,8 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </button>
 
-          {/* Seletor de Idioma Compacto em Menu (Desktop lg: >= 1024px) */}
-          <div className="hidden lg:block shrink-0">
+          {/* Seletor de Idioma no Cabeçalho (Mobile, Tablet e Desktop) */}
+          <div className="shrink-0">
             <LanguageSelector variant="dropdown" />
           </div>
 
@@ -151,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={onOpenBooking}
-            className={`inline-flex items-center gap-1.5 sm:gap-2 font-bold text-xs sm:text-xs xl:text-sm px-2.5 sm:px-3.5 xl:px-4 py-2 xl:py-2.5 rounded-xl shadow-xs transition-all whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+            className={`inline-flex items-center gap-1.5 sm:gap-2 font-bold text-xs sm:text-xs xl:text-sm px-2.5 sm:px-3.5 xl:px-4 py-2 xl:py-2.5 min-h-[38px] sm:min-h-[40px] rounded-xl shadow-xs transition-all whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
               currentPage === 'agendamento'
                 ? 'bg-blue-700 text-white ring-2 ring-blue-300'
                 : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white'
@@ -160,21 +160,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
             <span className="hidden sm:inline">{t.common.scheduleMeeting}</span>
-            <span className="sm:hidden">Agendar</span>
+            <span className="sm:hidden font-bold">Agendar</span>
           </button>
 
-          {/* Botão de Menu (Acessível em mobile, tablet e desktop) */}
+          {/* Botão de Menu (Apenas Mobile e Tablet < 1024px; Oculto em Desktop) */}
           <button
             ref={toggleButtonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="min-w-[40px] min-h-[40px] h-10 px-2.5 sm:px-3 flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer shadow-2xs border border-slate-200/90"
+            className="lg:hidden min-w-[38px] sm:min-w-[40px] min-h-[38px] sm:min-h-[40px] h-9.5 sm:h-10 px-2 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer shadow-2xs border border-slate-200/90"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-menu"
             aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
           >
             {mobileMenuOpen ? <X className="w-5 h-5 text-slate-900" /> : <Menu className="w-5 h-5 text-slate-900" />}
-            <span className="hidden md:inline text-xs font-semibold text-slate-700">Menu</span>
           </button>
         </div>
       </div>
